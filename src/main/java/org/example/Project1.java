@@ -8,6 +8,7 @@ import org.json.simple.parser.ParseException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -54,17 +55,33 @@ public class Project1 {
         //제이슨 문자열로 결과를 받았음 => 파싱필요
         JSONParser jp = new JSONParser();
         JSONObject jsonObject = (JSONObject) jp.parse(result);
-        JSONArray arr = (JSONArray) jsonObject.get("data");
+        JSONArray arr = (JSONArray) jsonObject.get("addresses");
         //System.out.println(arr);
         for (Object o : arr) {
             JSONObject obj = (JSONObject) o;
-            System.out.print(obj.get("id") + "\t");
-            System.out.print(obj.get("facilityName") + "\t");
-            System.out.print(obj.get("address") + "\t");
-            System.out.print(obj.get("org") + "\t");
-            System.out.print(obj.get("createdAt") + "\t");
-            System.out.println(obj.get("phoneNumber"));
+            System.out.println("도로명 주소:" + obj.get("roadAddress"));
+            System.out.println("지번 주소:" + obj.get("jibunAddress"));
+            System.out.println("경도:" + obj.get("x"));
+            System.out.println("위도:" + obj.get("y"));
+
+            String x = obj.get("x").toString(); //경도
+            String y = obj.get("y").toString(); //위도
+            String z = obj.get("roadAddress").toString(); //도로명주소
+
+            mapService(x,y,z);
         }
+
+    }
+
+    private static void mapService(String x, String y, String z) throws UnsupportedEncodingException {
+        //네이버 Static Map 서비스로 이미지를 가져오기!
+        String mapUrl = "https://naveropenapi.apigw.ntruss.com/map-static/v2/raster?";
+        String pos = URLEncoder.encode(x + " " + y, "UTF-8");
+        //w=300&h=300&center=127.1054221,37.3591614&level=16
+        mapUrl += "center=" + x + "," + y; //x,y 좌표
+        mapUrl += "&level=16&w=700&h=500"; //줌(1~20), 가로이미지 700 세로 500
+        mapUrl += "&markers=type:t|size:mid:pos:"+pos+"|label:"+URLEncoder.encode(z, "UTF-8");
+        System.out.println(mapUrl);
 
     }
 }
