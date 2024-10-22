@@ -1,8 +1,11 @@
 package org.example;
 
+import org.json.simple.parser.ParseException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class MainFrame extends JFrame {
 
@@ -21,7 +24,11 @@ public class MainFrame extends JFrame {
         panel.add(btn);
         //버튼을 눌렀을때 이벤트
         btn.addActionListener(e -> {
-            new NaverMap(this);
+            try {
+                new NaverMap(this);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
         //가운데 이미지라벨
         imageLabel = new JLabel("지도보기");
