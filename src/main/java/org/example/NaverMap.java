@@ -5,11 +5,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 import java.net.*;
+
 
 /**
  * 네이버맵 API 요청해서 이미지 가져오기
@@ -67,11 +68,48 @@ public class NaverMap {
             System.out.println("경도:" + obj.get("x"));
             System.out.println("위도:" + obj.get("y"));
 
-            String x = obj.get("x").toString(); //경도
-            String y = obj.get("y").toString(); //위도
-            String z = obj.get("roadAddress").toString(); //도로명주소
+            AddressVO vo = new AddressVO();
+            vo.setRoadAddress(obj.get("roadAddress").toString());
+            vo.setJibunAddress(obj.get("jibunAddress").toString());
+            vo.setX(obj.get("x").toString());
+            vo.setY(obj.get("y").toString());
 
-            //mapService(x,y,z);
+            mapService(vo);
         }
     }
+
+    private void mapService(AddressVO vo) throws IOException {
+        //네이버 Static Map 서비스로 이미지를 가져오기!
+        String mapUrl = "https://naveropenapi.apigw.ntruss.com/map-static/v2/raster?";
+        String pos = URLEncoder.encode(vo.getX() + " " + vo.getY(), "UTF-8");
+        //w=300&h=300&center=127.1054221,37.3591614&level=16
+        mapUrl += "center=" + vo.getX() + "," + vo.getY(); //x,y 좌표
+        mapUrl += "&level=16&w=700&h=500"; //줌(1~20), 가로이미지 700 세로 500
+        mapUrl += "&markers=type:t|size:mid|pos:"+pos+"|label:"+URLEncoder.encode(vo.getRoadAddress(), "UTF-8");
+        //System.out.println(mapUrl);
+        URL url = new URL(mapUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("GET");
+        //conn.setRequestProperty("Content-type", "application/json"); //내가 보낼때 제이슨
+        conn.setRequestProperty("Accept", "application/json"); //받을때 제이슨으로 요청
+        conn.setRequestProperty("x-ncp-apigw-api-key-id", ID);
+        conn.setRequestProperty("x-ncp-apigw-api-key", SECRET);
+        //System.out.println("Response Code: " + conn.getResponseCode());
+
+        if(conn.getResponseCode() == 200) {
+            InputStream is = conn.getInputStream();
+            Image image = ImageIO.read(is);
+            is.close();
+            ImageIcon imageIcon = new ImageIcon(image);
+            mainFrame.imageLabel.setIcon(imageIcon);
+            mainFrame.resAddress.setText(vo.getRoadAddress());
+            mainFrame.jibunAddress.setText(vo.getJibunAddress());
+            mainFrame.resX.setText(vo.getX());
+            mainFrame.resY.setText(vo.getY());
+        }
+        conn.disconnect(); //연결종료
+    }
+
+
 }
