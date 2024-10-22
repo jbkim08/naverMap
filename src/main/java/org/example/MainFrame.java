@@ -2,6 +2,7 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
 
@@ -18,6 +19,10 @@ public class MainFrame extends JFrame {
         panel.add(addressLbl);
         panel.add(addressTxt);
         panel.add(btn);
+        //버튼을 눌렀을때 이벤트
+        btn.addActionListener(e -> {
+            new NaverMap(this);
+        });
         //가운데 이미지라벨
         imageLabel = new JLabel("지도보기");
         //아래쪽 패널
