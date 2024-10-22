@@ -17,6 +17,10 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Project1 {
+
+    private static final String ID = "omcmy4brbg";
+    private static final String SECRET = "wkqVbfUYc3geKgklu07N4SAxzgGhqzz1vbQu7esk";
+
     public static void main(String[] args) throws IOException, ParseException {
         /* 주소를 입력받기 */
         Scanner sc = new Scanner(System.in);
@@ -37,8 +41,8 @@ public class Project1 {
         conn.setRequestMethod("GET");
         //conn.setRequestProperty("Content-type", "application/json"); //내가 보낼때 제이슨
         conn.setRequestProperty("Accept", "application/json"); //받을때 제이슨으로 요청
-        conn.setRequestProperty("x-ncp-apigw-api-key-id", "omcmy4brbg");
-        conn.setRequestProperty("x-ncp-apigw-api-key", "wkqVbfUYc3geKgklu07N4SAxzgGhqzz1vbQu7esk");
+        conn.setRequestProperty("x-ncp-apigw-api-key-id", ID);
+        conn.setRequestProperty("x-ncp-apigw-api-key", SECRET);
         System.out.println("Response Code: " + conn.getResponseCode());
 
         BufferedReader br;
@@ -90,8 +94,8 @@ public class Project1 {
         conn.setRequestMethod("GET");
         //conn.setRequestProperty("Content-type", "application/json"); //내가 보낼때 제이슨
         conn.setRequestProperty("Accept", "application/json"); //받을때 제이슨으로 요청
-        conn.setRequestProperty("x-ncp-apigw-api-key-id", "omcmy4brbg");
-        conn.setRequestProperty("x-ncp-apigw-api-key", "wkqVbfUYc3geKgklu07N4SAxzgGhqzz1vbQu7esk");
+        conn.setRequestProperty("x-ncp-apigw-api-key-id", ID);
+        conn.setRequestProperty("x-ncp-apigw-api-key", SECRET);
         //System.out.println("Response Code: " + conn.getResponseCode());
 
         if(conn.getResponseCode() == 200) {
